@@ -2,6 +2,7 @@
 
 **Pretty, dynamic SVG badges for your GitHub README — progress bars for any period, doomsday-style countdowns, the classic "days since" sign, and a library to build your own.**
 
+[![CI](https://github.com/tiger-dreams/awesometime/actions/workflows/ci.yml/badge.svg)](https://github.com/tiger-dreams/awesometime/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/awesometime.svg)](https://www.npmjs.com/package/awesometime)
 [![license](https://img.shields.io/npm/l/awesometime.svg)](https://github.com/tiger-dreams/awesometime/blob/main/LICENSE)
 [![node](https://img.shields.io/node/v/awesometime.svg)](https://www.npmjs.com/package/awesometime)
