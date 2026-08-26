@@ -35,3 +35,11 @@ test('locale=ko swaps in Korean labels', () => {
   const { svg } = renderFromQuery({ locale: 'ko' }, NOW);
   assert.match(svg, /진행률/);
 });
+
+test('font param swaps the font-family stack, unknown font falls back to default', () => {
+  const jetbrains = renderFromQuery({ font: 'jetbrains' }, NOW);
+  assert.match(jetbrains.svg, /JetBrains Mono/);
+
+  const fallback = renderFromQuery({ font: 'not-a-real-font' }, NOW);
+  assert.match(fallback.svg, /SFMono-Regular/);
+});

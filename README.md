@@ -24,6 +24,8 @@ Not just the calendar year — point it at any date and get a doomsday-clock-sty
 
 ![Countdown](https://awesometime.vercel.app/api?type=countdown&date=2026-12-25&label=Christmas)
 
+The **seconds box actually ticks**, live, in your browser — it's not a screenshot. That's not JavaScript (an `<img>`-embedded SVG can't run scripts); it's a declarative SMIL `<animate>` loop baked into the SVG itself, so it keeps animating even though the underlying file is only re-fetched per the cache headers below.
+
 ## Styles
 
 Three built-in styles, two themes, and a full set of query params to tune the rest.
@@ -68,6 +70,14 @@ Three built-in styles, two themes, and a full set of query params to tune the re
 
 ![](https://awesometime.vercel.app/api?locale=ko)
 
+**Pick a font.** No font files are embedded — these are curated font-family stacks of monospace fonts developers actually have installed (JetBrains Mono, Fira Code, IBM Plex Mono, Cascadia Code, Space Mono), each falling back gracefully if you don't:
+
+```md
+![](https://awesometime.vercel.app/api?style=terminal&font=jetbrains)
+```
+
+![](https://awesometime.vercel.app/api?style=terminal&font=jetbrains)
+
 ## Query params
 
 | Param | Values | Default | Applies to |
@@ -76,6 +86,7 @@ Three built-in styles, two themes, and a full set of query params to tune the re
 | `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
 | `theme` | `dark`, `light` | `dark` | both |
 | `locale` | `en`, `ko` | `en` | both |
+| `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | both |
 | `year` | any 4-digit year | current year | `year-progress` |
 | `date` | `YYYY-MM-DD` (optionally `THH:MM:SS`) | — (required) | `countdown` |
 | `label` | any text | auto-generated | both |
