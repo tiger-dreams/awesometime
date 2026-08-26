@@ -1,0 +1,38 @@
+{
+  "name": "awesometime",
+  "version": "0.1.0",
+  "description": "Pretty, dynamic SVG badges for your GitHub README — year progress and countdowns — plus a small library to build your own.",
+  "type": "module",
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "svg",
+    "badge",
+    "readme",
+    "github-readme",
+    "year-progress",
+    "countdown",
+    "profile-readme"
+  ],
+  "author": "tiger-dreams",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiger-dreams/awesometime.git"
+  },
+  "homepage": "https://github.com/tiger-dreams/awesometime#readme",
+  "bugs": {
+    "url": "https://github.com/tiger-dreams/awesometime/issues"
+  },
+  "files": [
+    "lib"
+  ]
+}

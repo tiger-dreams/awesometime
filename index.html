@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>awesometime — pretty date badges for your README</title>
+<meta name="description" content="Dynamic SVG badges for GitHub READMEs: year progress and doomsday-style countdowns. No install, no build step.">
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #c9d1d9;
+    --dim: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --mono: 'SFMono-Regular','Consolas','Liberation Mono','Menlo',monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+  h1 {
+    font-size: 2rem;
+    margin: 0 0 8px;
+  }
+  .tagline {
+    color: var(--dim);
+    font-size: 1.1rem;
+    margin: 0 0 40px;
+  }
+  h2 {
+    font-size: 1.1rem;
+    margin: 48px 0 12px;
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  img.badge { display: block; margin: 12px 0; max-width: 100%; }
+  pre {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent2);
+  }
+  a { color: var(--accent); }
+  .links { margin-top: 40px; color: var(--dim); font-size: 14px; }
+
+  /* live ticking demo */
+  .clock {
+    display: flex;
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .clock .unit {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 0;
+    flex: 1;
+    text-align: center;
+  }
+  .clock .unit .n {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .clock .unit .l {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>awesometime</h1>
+  <p class="tagline">Pretty, dynamic SVG badges for your GitHub README — year progress, doomsday-style countdowns, and a library to build your own.</p>
+
+  <h2>Year progress — drop this in your README</h2>
+  <img class="badge" src="/api" alt="Year progress badge">
+  <pre>![Year Progress](https://awesometime.vercel.app/api)</pre>
+
+  <h2>Countdown to any date</h2>
+  <img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027" alt="Countdown badge">
+  <pre>![Countdown](https://awesometime.vercel.app/api?type=countdown&amp;date=2027-01-01&amp;label=2027)</pre>
+
+  <p style="color: var(--dim); font-size: 14px;">The image above updates on a caching schedule (see the README), not every second — that's the right tradeoff for something embedded in a static page. This ticks live because it's plain JavaScript on <em>this</em> page, not the badge itself:</p>
+
+  <div class="clock" id="live-clock">
+    <div class="unit"><div class="n" id="c-days">--</div><div class="l">DAYS</div></div>
+    <div class="unit"><div class="n" id="c-hrs">--</div><div class="l">HRS</div></div>
+    <div class="unit"><div class="n" id="c-min">--</div><div class="l">MIN</div></div>
+    <div class="unit"><div class="n" id="c-sec">--</div><div class="l">SEC</div></div>
+  </div>
+
+  <h2>More styles</h2>
+  <img class="badge" src="/api?style=gradient&amp;theme=light" alt="Gradient style badge">
+  <img class="badge" src="/api?style=minimal" alt="Minimal style badge">
+  <img class="badge" src="/api?locale=ko" alt="Korean locale badge">
+
+  <h2>Use it as a library</h2>
+  <pre>npm install awesometime</pre>
+
+  <div class="links">
+    <a href="https://github.com/tiger-dreams/awesometime">Source on GitHub</a> · MIT License
+  </div>
+</main>
+<script>
+  (function () {
+    var target = new Date('2027-01-01T00:00:00Z').getTime();
+    var els = {
+      d: document.getElementById('c-days'),
+      h: document.getElementById('c-hrs'),
+      m: document.getElementById('c-min'),
+      s: document.getElementById('c-sec'),
+    };
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function tick() {
+      var diff = Math.max(0, target - Date.now());
+      var days = Math.floor(diff / 86400000);
+      var hrs = Math.floor((diff % 86400000) / 3600000);
+      var min = Math.floor((diff % 3600000) / 60000);
+      var sec = Math.floor((diff % 60000) / 1000);
+      els.d.textContent = pad(days);
+      els.h.textContent = pad(hrs);
+      els.m.textContent = pad(min);
+      els.s.textContent = pad(sec);
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+</body>
+</html>
