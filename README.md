@@ -1,6 +1,6 @@
 # awesometime
 
-**Pretty, dynamic SVG badges for your GitHub README — year progress, doomsday-style countdowns, and a library to build your own.**
+**Pretty, dynamic SVG badges for your GitHub README — progress bars for any period, doomsday-style countdowns, the classic "days since" sign, and a library to build your own.**
 
 [![npm version](https://img.shields.io/npm/v/awesometime.svg)](https://www.npmjs.com/package/awesometime)
 [![license](https://img.shields.io/npm/l/awesometime.svg)](https://github.com/tiger-dreams/awesometime/blob/main/LICENSE)
@@ -25,6 +25,28 @@ Not just the calendar year — point it at any date and get a doomsday-clock-sty
 ![Countdown](https://awesometime.vercel.app/api?type=countdown&date=2026-12-25&label=Christmas)
 
 The **seconds box actually ticks**, live, in your browser — it's not a screenshot. That's not JavaScript (an `<img>`-embedded SVG can't run scripts); it's a declarative SMIL `<animate>` loop baked into the SVG itself, so it keeps animating even though the underlying file is only re-fetched per the cache headers below.
+
+## Not just the year — any period
+
+`year-progress` generalizes to `period=day|week|month|quarter|year` (year is still the default):
+
+```md
+![](https://awesometime.vercel.app/api?period=week&style=gradient)
+```
+
+![](https://awesometime.vercel.app/api?period=week&style=gradient)
+
+## The classic "days since" sign
+
+The workplace-safety-sign parody every dev knows, as a real embeddable badge instead of a one-off screenshot — hazard stripes included:
+
+```md
+![](https://awesometime.vercel.app/api?type=dayssince&date=2026-08-01&label=Last%20Incident)
+```
+
+![](https://awesometime.vercel.app/api?type=dayssince&date=2026-08-01&label=Last%20Incident)
+
+Give it a future date and it flips to "DAYS UNTIL" automatically — works equally well for "days until launch" as for "days since the last incident."
 
 ## Styles
 
@@ -82,17 +104,20 @@ Three built-in styles, two themes, and a full set of query params to tune the re
 
 | Param | Values | Default | Applies to |
 |---|---|---|---|
-| `type` | `year-progress`, `countdown` | `year-progress` | both |
+| `type` | `year-progress`, `countdown`, `dayssince` | `year-progress` | — |
+| `period` | `day`, `week`, `month`, `quarter`, `year` | `year` | `year-progress` |
 | `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
-| `theme` | `dark`, `light` | `dark` | both |
-| `locale` | `en`, `ko` | `en` | both |
-| `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | both |
-| `year` | any 4-digit year | current year | `year-progress` |
-| `date` | `YYYY-MM-DD` (optionally `THH:MM:SS`) | — (required) | `countdown` |
-| `label` | any text | auto-generated | both |
-| `color` | 3 or 6-digit hex, no `#` | theme default | both — overrides the accent color |
-| `accent2` | 3 or 6-digit hex, no `#` | theme default | both — overrides the secondary accent |
-| `bg` | 3 or 6-digit hex, no `#` | theme default | both — overrides the card background |
+| `theme` | `dark`, `light` | `dark` | `year-progress`, `countdown` |
+| `locale` | `en`, `ko` | `en` | `year-progress`, `countdown` |
+| `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
+| `year` | any 4-digit year | current year | `year-progress` with `period=year` |
+| `date` | `YYYY-MM-DD` (optionally `THH:MM:SS`) | — (required) | `countdown`, `dayssince` |
+| `label` | any text | auto-generated | all |
+| `color` | 3 or 6-digit hex, no `#` | theme default | all — overrides the accent color (the hazard-stripe color for `dayssince`) |
+| `accent2` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides the secondary accent |
+| `bg` | 3 or 6-digit hex, no `#` | theme default | all — overrides the card background |
+
+An unrecognized `period` falls back to `year` rather than erroring, same as an unrecognized `style`.
 
 Malformed params fall back to defaults instead of erroring, except a missing/invalid `date` on a `type=countdown` request, which renders a small red error card so a typo is obvious at a glance instead of silently wrong.
 
