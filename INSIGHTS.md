@@ -57,3 +57,7 @@ Internal notes from benchmarking similar projects and tracking online buzz aroun
 **Shipped**: `og:*` and `twitter:*` meta tags on the landing page, plus a real 1200×630 `social-preview.png` composited from the actual badge output (progress bar, days-since sign, countdown) rather than a generic banner — so the link preview itself demonstrates the product. Built by rendering each component as SVG (rsvg-convert, which handles text reliably) and compositing with ImageMagick (which doesn't, in this environment — no ghostscript/font resolution — so text was rendered via SVG first, image-only compositing via ImageMagick second, working around the tool's actual limitation rather than fighting it).
 
 **Process note**: first compositing attempt had a real bug (badges overlapping due to a height/scale miscalculation) — caught by actually looking at the rendered PNG before shipping, not just checking that the `convert` commands exited 0.
+
+## Cycle 8 — 2026-08-27
+
+**Note**: GitHub Actions had a platform-wide outage for several hours this session (confirmed via githubstatus.com, not something fixable locally) — both repos' CI runs were stuck queued. Checked again this cycle: outage resolved, both repos' latest commits show green CI. Added a real `CI` status badge to both READMEs (was missing before) now that there's something true to show — a badge would have been actively misleading while stuck queued/failed from the outage.
