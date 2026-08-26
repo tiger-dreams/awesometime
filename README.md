@@ -48,9 +48,28 @@ The workplace-safety-sign parody every dev knows, as a real embeddable badge ins
 
 Give it a future date and it flips to "DAYS UNTIL" automatically — works equally well for "days until launch" as for "days since the last incident."
 
+## Auto dark/light mode
+
+Two ways to make a badge match the viewer's theme instead of committing to one:
+
+**On GitHub specifically**, use GitHub's own light/dark URL-fragment convention — GitHub's markdown renderer wraps these in a `<picture>` element for you:
+
+```md
+![Year Progress](https://awesometime.vercel.app/api?theme=light#gh-light-mode-only)
+![Year Progress](https://awesometime.vercel.app/api?theme=dark#gh-dark-mode-only)
+```
+
+**Everywhere else** (or if you'd rather ship one URL), pass `theme=auto`. The SVG embeds its own `prefers-color-scheme` media query, so the *same* image file switches itself based on the viewer's OS/browser setting — verified working in Chromium with light- and dark-mode emulation, no separate URLs needed:
+
+```md
+![](https://awesometime.vercel.app/api?theme=auto)
+```
+
+This degrades gracefully (stays in light mode) on renderers that don't support CSS custom properties inside an SVG `<style>` block.
+
 ## Styles
 
-Three built-in styles, two themes, and a full set of query params to tune the rest.
+Three built-in styles, two themes plus `auto`, and a full set of query params to tune the rest.
 
 **`style=terminal`** (default) — block-segment progress bar:
 
@@ -107,7 +126,7 @@ Three built-in styles, two themes, and a full set of query params to tune the re
 | `type` | `year-progress`, `countdown`, `dayssince` | `year-progress` | — |
 | `period` | `day`, `week`, `month`, `quarter`, `year` | `year` | `year-progress` |
 | `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
-| `theme` | `dark`, `light` | `dark` | `year-progress`, `countdown` |
+| `theme` | `dark`, `light`, `auto` | `dark` | `year-progress`, `countdown` |
 | `locale` | `en`, `ko` | `en` | `year-progress`, `countdown` |
 | `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
 | `year` | any 4-digit year | current year | `year-progress` with `period=year` |
