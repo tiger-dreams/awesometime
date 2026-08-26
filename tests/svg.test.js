@@ -57,3 +57,19 @@ test('renderCountdownCard shows zero-padded digits and pluralizes past label', (
   const past = renderCountdownCard({ title: 'Launch', days: 5, hours: 3, minutes: 9, isPast: true });
   assert.match(past, />DAYS AGO</);
 });
+
+test('renderCountdownCard embeds a live-animating seconds digit (60 frames, SEC label)', () => {
+  const svg = renderCountdownCard({ title: 'Launch', days: 5, hours: 3, minutes: 9, seconds: 42, isPast: false });
+  assert.match(svg, />SEC</);
+  // one <animate> per second-frame, 0-59
+  const animateCount = (svg.match(/<animate /g) || []).length;
+  assert.equal(animateCount, 60);
+  // the frame for the current second (42) must be visible immediately (keyTimes starts "0;0;")
+  assert.match(svg, /keyTimes="0;0\.0000;0\.0167;1"/);
+});
+
+test('renderCountdownCard seconds digit defaults to 0 and stays well-formed', () => {
+  const svg = renderCountdownCard({ title: 'Launch', days: 0, hours: 0, minutes: 0, isPast: false });
+  assert.match(svg, /^<svg/);
+  assert.match(svg, /<\/svg>$/);
+});
