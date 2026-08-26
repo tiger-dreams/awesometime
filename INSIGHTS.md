@@ -25,3 +25,11 @@ Internal notes from benchmarking similar projects and tracking online buzz aroun
 **Shipped**: `tz=<IANA zone>` param (e.g. `tz=Asia/Seoul`) for `countdown`/`dayssince`, interpreting `date` as local wall-clock time in that zone instead of UTC. DST-aware (uses the same offset-detection technique real timezone libraries use — verified against known UTC offsets for `Asia/Seoul` and both `America/New_York` seasons), built on Node's built-in `Intl` (no new dependency). An unrecognized zone name is a 400, not a silent wrong-answer fallback to UTC — deliberately, since the whole point of researching this was that *silent* timezone mishandling is what generates complaints elsewhere.
 
 **Gap not pursued**: "milestone celebration" badges (round-number day counts) — searched, didn't find clear distinct demand separate from what `countdown`/`dayssince` already cover.
+
+## Cycle 4 — 2026-08-27
+
+**Research**: Searched Chinese (CSDN, Gitee, HackMD zh) and Japanese (Zenn, Qiita) dev-blog ecosystems for badge-generator content. Both communities write actively about README badges (shields.io, profile-readme generators are common topics) but neither turned up a dedicated "year progress"/countdown SVG tool — same open-niche pattern as the English-language research in Cycle 1, now confirmed across two more language communities. Real, sizeable audiences (`awesome-github-profile-readme-chinese` alone: 309★) with no direct competitor and no locale support in this project until now (was `en`/`ko` only).
+
+**Shipped**: `locale=zh` and `locale=ja`, covering year/period titles, elapsed/remaining phrasing, and countdown title phrasing (`距{label}还有` / `{label}已过` for zh; `{label}まで` / `{label}から` for ja). Verified CJK glyph rendering visually (rsvg-convert) for both — no tofu/missing-glyph issues. Deliberately left `type=dayssince`'s "DAYS SINCE"/"DAYS UNTIL" caption English-only across all locales — it's a specific US workplace-sign meme reference, and translating it would dilute the joke for anyone who recognizes the original rather than making it more accessible.
+
+**Note for next cycle**: locale coverage is now en/ko/zh/ja. A reasonable next research angle is Spanish/Portuguese (large GitHub populations in Brazil/Latin America) if buzz supports it — not yet checked.

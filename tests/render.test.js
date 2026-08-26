@@ -109,3 +109,25 @@ test('an unrecognized tz renders a 400, not a silent UTC fallback', () => {
   const { status } = renderFromQuery({ type: 'countdown', date: '2026-12-25', tz: 'Not/AZone' }, NOW);
   assert.equal(status, 400);
 });
+
+test('locale=zh and locale=ja render their own titles (not falling back to English)', () => {
+  const zh = renderFromQuery({ locale: 'zh' }, NOW);
+  assert.match(zh.svg, /2026年进度/);
+
+  const ja = renderFromQuery({ locale: 'ja' }, NOW);
+  assert.match(ja.svg, /2026年の進捗/);
+});
+
+test('locale=zh/ja also localize period titles and countdown phrasing', () => {
+  const zhWeek = renderFromQuery({ locale: 'zh', period: 'week' }, NOW);
+  assert.match(zhWeek.svg, /本周/);
+
+  const jaCountdown = renderFromQuery({ locale: 'ja', type: 'countdown', date: '2026-12-25', label: 'クリスマス' }, NOW);
+  assert.match(jaCountdown.svg, /クリスマスまで/);
+});
+
+test('an unrecognized locale falls back to English rather than erroring', () => {
+  const { status, svg } = renderFromQuery({ locale: 'xx' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /2026 Progress/);
+});
