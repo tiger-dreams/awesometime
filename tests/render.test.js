@@ -90,3 +90,22 @@ test('type=dayssince with a missing/invalid date renders a 400 error card', () =
   const { status } = renderFromQuery({ type: 'dayssince' }, NOW);
   assert.equal(status, 400);
 });
+
+test('type=dayssince with tz interprets the date in the given zone, not UTC', () => {
+  // A reference "now" with a non-zero hour so the +9h Seoul shift crosses
+  // a whole extra day boundary (unlike the shared NOW fixture, which is
+  // exact UTC midnight and would floor to the same day count either way).
+  const now2 = new Date('2026-08-27T23:00:00Z');
+  // No tz: 2026-08-25T00:00:00Z is 71h before now2 -> floor(71/24) = 2 days.
+  const withoutTz = renderFromQuery({ type: 'dayssince', date: '2026-08-25', label: 'X' }, now2);
+  assert.match(withoutTz.svg, />2</);
+  // With tz: 2026-08-25 00:00 KST = 2026-08-24T15:00:00Z, 80h before now2 -> floor(80/24) = 3 days.
+  const withTz = renderFromQuery({ type: 'dayssince', date: '2026-08-25', tz: 'Asia/Seoul', label: 'X' }, now2);
+  assert.equal(withTz.status, 200);
+  assert.match(withTz.svg, />3</);
+});
+
+test('an unrecognized tz renders a 400, not a silent UTC fallback', () => {
+  const { status } = renderFromQuery({ type: 'countdown', date: '2026-12-25', tz: 'Not/AZone' }, NOW);
+  assert.equal(status, 400);
+});

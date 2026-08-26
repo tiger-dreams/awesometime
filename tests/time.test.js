@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { yearProgress, periodProgress, countdown, parseDateParam } from '../lib/time.js';
+import { yearProgress, periodProgress, countdown, parseDateParam, isValidTimeZone } from '../lib/time.js';
 
 test('yearProgress: Jan 1 is day 1', () => {
   const r = yearProgress(2026, new Date('2026-01-01T12:00:00Z'));
@@ -106,4 +106,37 @@ test('periodProgress: year matches yearProgress for the same date', () => {
   assert.equal(pp.unitsElapsed, yp.daysElapsed);
   assert.equal(pp.unitsTotal, yp.daysInYear);
   assert.equal(pp.percent, yp.percent);
+});
+
+test('isValidTimeZone accepts real IANA zones, rejects garbage', () => {
+  assert.equal(isValidTimeZone('Asia/Seoul'), true);
+  assert.equal(isValidTimeZone('America/New_York'), true);
+  assert.equal(isValidTimeZone('Not/AZone'), false);
+  assert.equal(isValidTimeZone(''), false);
+  assert.equal(isValidTimeZone(undefined), false);
+});
+
+test('parseDateParam with tz interprets the date as local wall-clock time in that zone', () => {
+  // Midnight KST (UTC+9, no DST) on 2026-01-01 is 2025-12-31T15:00:00Z.
+  const d = parseDateParam('2026-01-01', 'Asia/Seoul');
+  assert.ok(d);
+  assert.equal(d.toISOString(), '2025-12-31T15:00:00.000Z');
+});
+
+test('parseDateParam with tz is DST-aware for the same zone across seasons', () => {
+  // America/New_York: EST (UTC-5) in January, EDT (UTC-4) in July.
+  const winter = parseDateParam('2026-01-01T00:00:00', 'America/New_York');
+  assert.equal(winter.toISOString(), '2026-01-01T05:00:00.000Z');
+
+  const summer = parseDateParam('2026-07-01T00:00:00', 'America/New_York');
+  assert.equal(summer.toISOString(), '2026-07-01T04:00:00.000Z');
+});
+
+test('parseDateParam rejects an explicitly-given but unrecognized tz (does not silently fall back to UTC)', () => {
+  assert.equal(parseDateParam('2026-01-01', 'Not/AZone'), null);
+});
+
+test('parseDateParam with no tz is unchanged (UTC, as before)', () => {
+  const d = parseDateParam('2026-01-01');
+  assert.equal(d.toISOString(), '2026-01-01T00:00:00.000Z');
 });

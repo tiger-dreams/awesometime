@@ -26,6 +26,14 @@ Not just the calendar year — point it at any date and get a doomsday-clock-sty
 
 The **seconds box actually ticks**, live, in your browser — it's not a screenshot. That's not JavaScript (an `<img>`-embedded SVG can't run scripts); it's a declarative SMIL `<animate>` loop baked into the SVG itself, so it keeps animating even though the underlying file is only re-fetched per the cache headers below.
 
+**Dates default to UTC.** "Countdown widgets show the wrong time" is a genuinely common complaint elsewhere (timezone-unaware countdown plugins are a recurring source of confused bug reports). Pass `tz` with any IANA zone name to interpret `date` as local wall-clock time there instead — DST-aware, computed with the same technique real timezone libraries use, no external dependency:
+
+```md
+![](https://awesometime.vercel.app/api?type=countdown&date=2027-01-01&tz=Asia/Seoul&label=New%20Year%20KST)
+```
+
+A `tz` that isn't a real IANA zone name renders a 400 error card rather than silently guessing UTC.
+
 ## Not just the year — any period
 
 `year-progress` generalizes to `period=day|week|month|quarter|year` (year is still the default):
@@ -131,6 +139,7 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 | `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
 | `year` | any 4-digit year | current year | `year-progress` with `period=year` |
 | `date` | `YYYY-MM-DD` (optionally `THH:MM:SS`) | — (required) | `countdown`, `dayssince` |
+| `tz` | an IANA zone, e.g. `Asia/Seoul` | UTC | `countdown`, `dayssince` — interprets `date` as local time there (DST-aware); an unrecognized zone is a 400, not a silent UTC fallback |
 | `label` | any text | auto-generated | all |
 | `color` | 3 or 6-digit hex, no `#` | theme default | all — overrides the accent color (the hazard-stripe color for `dayssince`) |
 | `accent2` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides the secondary accent |
