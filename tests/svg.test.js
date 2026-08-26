@@ -73,3 +73,28 @@ test('renderCountdownCard seconds digit defaults to 0 and stays well-formed', ()
   assert.match(svg, /^<svg/);
   assert.match(svg, /<\/svg>$/);
 });
+
+test('theme=auto emits CSS custom properties and a media-query style block, no literal fallback hex', () => {
+  const svg = renderTerminalProgress({
+    title: 'Auto', percent: 50, elapsedLabel: '', remainingLabel: '', theme: 'auto',
+  });
+  assert.match(svg, /<style>:root\{--at-bg:/);
+  assert.match(svg, /@media \(prefers-color-scheme: dark\)/);
+  assert.match(svg, /fill="var\(--at-text\)"/);
+});
+
+test('theme=auto respects color overrides in both the light base and dark override', () => {
+  const svg = renderTerminalProgress({
+    title: 'Auto', percent: 50, elapsedLabel: '', remainingLabel: '', theme: 'auto',
+    colors: { accent: 'ff6b6b' },
+  });
+  // The override applies to both branches of the style block (light base + dark media query).
+  const occurrences = (svg.match(/#ff6b6b/g) || []).length;
+  assert.equal(occurrences, 2);
+});
+
+test('theme=dark/light still emit plain literal colors, no var() or style block', () => {
+  const svg = renderTerminalProgress({ title: 'Plain', percent: 50, elapsedLabel: '', remainingLabel: '', theme: 'dark' });
+  assert.doesNotMatch(svg, /var\(--at-/);
+  assert.doesNotMatch(svg, /<style>/);
+});
