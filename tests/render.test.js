@@ -131,3 +131,19 @@ test('an unrecognized locale falls back to English rather than erroring', () => 
   assert.equal(status, 200);
   assert.match(svg, /2026 Progress/);
 });
+
+test('locale=es and locale=pt render their own titles', () => {
+  const es = renderFromQuery({ locale: 'es' }, NOW);
+  assert.match(es.svg, /Progreso de 2026/);
+
+  const pt = renderFromQuery({ locale: 'pt' }, NOW);
+  assert.match(pt.svg, /Progresso de 2026/);
+});
+
+test('locale=es/pt localize period titles and countdown phrasing', () => {
+  const esMonth = renderFromQuery({ locale: 'es', period: 'month' }, NOW);
+  assert.match(esMonth.svg, /Agosto/);
+
+  const ptCountdown = renderFromQuery({ locale: 'pt', type: 'countdown', date: '2026-12-25', label: 'Natal' }, NOW);
+  assert.match(ptCountdown.svg, /Natal em/);
+});

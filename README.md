@@ -111,7 +111,7 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 
 ![](https://awesometime.vercel.app/api?style=terminal&color=ff6b6b&theme=light)
 
-**Localized labels** — `locale=ko`, `zh`, or `ja`, or bring your own text entirely via `label=`:
+**Localized labels** — `locale=ko`, `zh`, `ja`, `es`, or `pt`, or bring your own text entirely via `label=`:
 
 ```md
 ![](https://awesometime.vercel.app/api?locale=ko)
@@ -137,7 +137,7 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 | `period` | `day`, `week`, `month`, `quarter`, `year` | `year` | `year-progress` |
 | `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
 | `theme` | `dark`, `light`, `auto` | `dark` | `year-progress`, `countdown` |
-| `locale` | `en`, `ko`, `zh`, `ja` | `en` | `year-progress`, `countdown` |
+| `locale` | `en`, `ko`, `zh`, `ja`, `es`, `pt` | `en` | `year-progress`, `countdown` |
 | `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
 | `year` | any 4-digit year | current year | `year-progress` with `period=year` |
 | `date` | `YYYY-MM-DD` (optionally `THH:MM:SS`) | — (required) | `countdown`, `dayssince` |

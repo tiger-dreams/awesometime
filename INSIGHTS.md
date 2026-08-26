@@ -33,3 +33,11 @@ Internal notes from benchmarking similar projects and tracking online buzz aroun
 **Shipped**: `locale=zh` and `locale=ja`, covering year/period titles, elapsed/remaining phrasing, and countdown title phrasing (`距{label}还有` / `{label}已过` for zh; `{label}まで` / `{label}から` for ja). Verified CJK glyph rendering visually (rsvg-convert) for both — no tofu/missing-glyph issues. Deliberately left `type=dayssince`'s "DAYS SINCE"/"DAYS UNTIL" caption English-only across all locales — it's a specific US workplace-sign meme reference, and translating it would dilute the joke for anyone who recognizes the original rather than making it more accessible.
 
 **Note for next cycle**: locale coverage is now en/ko/zh/ja. A reasonable next research angle is Spanish/Portuguese (large GitHub populations in Brazil/Latin America) if buzz supports it — not yet checked.
+
+## Cycle 5 — 2026-08-27
+
+**Research**: Followed up on Cycle 4's own "next cycle" note — checked Portuguese-BR (TabNews, Alura, Rocketseat, and a dedicated Brazilian badge-generator business at githubstats.com.br) and Spanish (DEV.to es, Alura es) dev communities. Same pattern a third time: active badge/README content, no dedicated year-progress/countdown tool in either language.
+
+**Shipped**: `locale=es` and `locale=pt`, same coverage as zh/ja (year/period titles, elapsed/remaining, countdown phrasing). Month names use `Intl`'s own `es-ES`/`pt-BR` locale data (capitalized — Romance-language month names are lowercase by default) rather than a hardcoded list. Locale coverage is now en/ko/zh/ja/es/pt — six languages, zero new dependencies (labels.js is still plain template functions).
+
+**Running insight across cycles 1, 4, 5**: the "no dedicated tool for this specific niche" finding has now replicated across three separate research passes in three different language ecosystems (en, zh+ja, es+pt). That's a much stronger signal than any single search — this is a real, consistent gap, not a fluke of one language's search results.
