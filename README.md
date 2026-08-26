@@ -182,6 +182,15 @@ Every function is pure (no I/O, no globals) — `yearProgress` and `countdown` a
 
 If you want a live-ticking countdown on an actual webpage, a small JS component is the right tool, and there are good ones. This project is specifically for the **README / static-image use case** — profile READMEs, project READMEs, doc sites — anywhere you can drop an `<img>` or `![]()` but can't run JavaScript. The image itself is regenerated fresh on every request (subject to the cache headers below), so it stays accurate without any script running on the page that embeds it.
 
+## Accessibility
+
+Badge accessibility is a real, [documented](https://github.com/orgs/community/discussions/14904) [problem](https://usethis.r-lib.org/articles/badge-accessibility.html) elsewhere — shields.io-style badges have been called out for contrast that fails WCAG. This project checks:
+
+- **Contrast**: every text/background color pair used across all themes and styles (including the safety-sign badge) is tested against WCAG AA (4.5:1 minimum) as part of the test suite (`tests/contrast.test.js`) — most pairs clear AAA (7:1). A future color change that regresses this fails CI.
+- **`<title>`**: every SVG includes a `<title>` element describing its current value (e.g. "2026 Progress: 65% complete"), which assistive tech can pick up for inline/object-embedded SVGs.
+
+One honest limitation, shared by every dynamic badge service including much larger ones: the `alt` text on a `![alt](url)` Markdown image is static, written once by whoever adds the badge to their README, while the badge's *value* changes over time — there's no way for the image itself to update text that lives in someone else's Markdown file. Write a real, current description rather than leaving `alt` empty or generic, e.g. `![2026 is 65% over](https://awesometime.vercel.app/api)`.
+
 ## Caching
 
 Responses are served with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` — GitHub's own image proxy (camo) also caches on top of that, so a badge typically updates within an hour of being re-fetched, not instantly. That's the right tradeoff for "days left in the year," not a design accident.

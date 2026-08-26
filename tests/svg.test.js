@@ -98,3 +98,17 @@ test('theme=dark/light still emit plain literal colors, no var() or style block'
   assert.doesNotMatch(svg, /var\(--at-/);
   assert.doesNotMatch(svg, /<style>/);
 });
+
+test('every style embeds a descriptive <title> for accessibility', () => {
+  const terminal = renderTerminalProgress({ title: '2026 Progress', percent: 65, elapsedLabel: '238 days elapsed', remainingLabel: '127 days left' });
+  assert.match(terminal, /<title>2026 Progress: 65% — 238 days elapsed, 127 days left<\/title>/);
+
+  const gradient = renderGradientProgress({ title: '2026 Progress', percent: 65, elapsedLabel: '238 days elapsed', remainingLabel: '127 days left' });
+  assert.match(gradient, /<title>2026 Progress: 65%/);
+
+  const minimal = renderMinimalProgress({ title: 'Year', percent: 65 });
+  assert.match(minimal, /<title>Year: 65% complete<\/title>/);
+
+  const countdown = renderCountdownCard({ title: 'Launch in', days: 5, hours: 3, minutes: 9, isPast: false });
+  assert.match(countdown, /<title>Launch in 5 days, 3 hours, 9 minutes<\/title>/);
+});
