@@ -90,7 +90,8 @@ Malformed params fall back to defaults instead of erroring, except a missing/inv
 The hosted API at `awesometime.vercel.app` is just a thin wrapper — everything it does is exported so you can build your own badge service, add styles it doesn't have, embed a card in a static-site generator, or self-host instead of depending on someone else's uptime.
 
 ```bash
-npm install awesometime
+# Not yet on the npm registry — install straight from GitHub for now:
+npm install github:tiger-dreams/awesometime
 ```
 
 ```js
