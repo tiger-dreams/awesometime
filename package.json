@@ -1,7 +1,7 @@
 {
   "name": "awesometime",
-  "version": "0.1.0",
-  "description": "Pretty, dynamic SVG badges for your GitHub README — year progress and countdowns — plus a small library to build your own.",
+  "version": "0.2.0",
+  "description": "Pretty, dynamic SVG badges for your GitHub README — progress bars for any period, countdowns, and the classic \"days since\" sign — plus a small library to build your own.",
   "type": "module",
   "main": "./lib/index.js",
   "exports": {
