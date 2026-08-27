@@ -69,3 +69,9 @@ Internal notes from benchmarking similar projects and tracking online buzz aroun
 **Shipped**: `motion=reduce` on `countdown` renders a static seconds digit instead of the SMIL animation. Deliberately an explicit opt-in query param rather than an automatic `prefers-reduced-motion` media-query detection — investigated the automatic route first, but a CSS media query can't reliably stop an *already-running* SMIL `<animate>` timeline across renderers with any real confidence, and shipping an automatic "fix" that might not actually work would be worse than an honest, working, explicit one (same reasoning already applied to `theme=auto` vs. GitHub's own explicit `#gh-dark-mode-only` convention).
 
 **User-prompted addition**: added a "Where people actually use this" section to the README (profile READMEs, project status badges, event/launch pages, roadmap docs, personal sites, chat pinned messages) — direct user feedback that concrete use cases were missing and needed for visitors to see themselves using the tool, not just a feature-by-feature reference.
+
+## Cycle 10 — 2026-08-27
+
+**Follow-up on a use case, not new research**: the README's "Where people actually use this" section listed Notion as a use case but never explained how, or whether it actually works well. Checked Notion's actual external-image behavior before writing anything — confirmed Notion caches external images on its own infrastructure with an undocumented, unpredictable refresh interval (hours to days), unlike GitHub's camo proxy which respects the `Cache-Control` header directly.
+
+**Shipped**: `docs/notion-guide.md` — concrete steps (`/image` → "Embed link" → paste URL) plus an honest caveat about the caching difference: fine for day-level badges (`period=`, `dayssince`), not a good fit for relying on real-time freshness. Linked from the README's use-cases bullet.

@@ -22,7 +22,7 @@ Any of these is just the image URL dropped somewhere that renders Markdown or pl
 - **Your GitHub profile README** (`github.com/<you>/<you>`) — a year-progress bar as a small personal touch, or a countdown to something you're building toward.
 - **A project's README** — `dayssince` for "days since last incident/regression," the classic status-page pattern, right at the top of the repo instead of buried in a dashboard only the team sees.
 - **A conference, hackathon, or launch page** — `countdown` to the event date, with the live-ticking seconds for a bit of urgency, embedded in a plain landing page `<img>` tag.
-- **A roadmap or OKR doc** (Notion, Confluence, a wiki page that renders Markdown images) — `period=quarter` or `period=month` next to a milestone list, so "how much of this quarter is left" doesn't require opening a separate calendar.
+- **A roadmap or OKR doc** (Notion, Confluence, a wiki page that renders Markdown images) — `period=quarter` or `period=month` next to a milestone list, so "how much of this quarter is left" doesn't require opening a separate calendar. See [`docs/notion-guide.md`](./docs/notion-guide.md) for the exact steps and a caching caveat worth knowing.
 - **A personal blog or portfolio site** — "127 days until I ship v2" as a plain `<img>`, no different from embedding any other image.
 - **A Slack/Discord pinned message or channel topic** — most chat clients unfurl image URLs, so a `dayssince`/`countdown` badge works as a lightweight shared status indicator without a bot.
 
