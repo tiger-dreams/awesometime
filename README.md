@@ -3,9 +3,9 @@
 **Pretty, dynamic SVG badges for your GitHub README — progress bars for any period, doomsday-style countdowns, the classic "days since" sign, and a library to build your own.**
 
 [![CI](https://github.com/tiger-dreams/awesometime/actions/workflows/ci.yml/badge.svg)](https://github.com/tiger-dreams/awesometime/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/awesometime.svg)](https://www.npmjs.com/package/awesometime)
-[![license](https://img.shields.io/npm/l/awesometime.svg)](https://github.com/tiger-dreams/awesometime/blob/main/LICENSE)
-[![node](https://img.shields.io/node/v/awesometime.svg)](https://www.npmjs.com/package/awesometime)
+[![npm version](https://img.shields.io/npm/v/@jeongpd/awesometime.svg)](https://www.npmjs.com/package/@jeongpd/awesometime)
+[![license](https://img.shields.io/npm/l/@jeongpd/awesometime.svg)](https://github.com/tiger-dreams/awesometime/blob/main/LICENSE)
+[![node](https://img.shields.io/node/v/@jeongpd/awesometime.svg)](https://www.npmjs.com/package/@jeongpd/awesometime)
 
 No install, no build step — drop an image URL in your README and it renders live, every time someone views the page.
 
@@ -171,12 +171,13 @@ Malformed params fall back to defaults instead of erroring, except a missing/inv
 The hosted API at `awesometime.vercel.app` is just a thin wrapper — everything it does is exported so you can build your own badge service, add styles it doesn't have, embed a card in a static-site generator, or self-host instead of depending on someone else's uptime.
 
 ```bash
-# Not yet on the npm registry — install straight from GitHub for now:
-npm install github:tiger-dreams/awesometime
+npm install @jeongpd/awesometime
 ```
 
+(Published as `@jeongpd/awesometime` — the unscoped `awesometime` name was too similar to an existing unrelated package. Installing straight from GitHub also still works: `npm install github:tiger-dreams/awesometime`.)
+
 ```js
-import { yearProgress, countdown, renderTerminalProgress, renderCountdownCard } from 'awesometime';
+import { yearProgress, countdown, renderTerminalProgress, renderCountdownCard } from '@jeongpd/awesometime';
 
 const { percent, daysElapsed, daysRemaining } = yearProgress(2026);
 
