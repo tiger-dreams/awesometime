@@ -61,3 +61,11 @@ Internal notes from benchmarking similar projects and tracking online buzz aroun
 ## Cycle 8 — 2026-08-27
 
 **Note**: GitHub Actions had a platform-wide outage for several hours this session (confirmed via githubstatus.com, not something fixable locally) — both repos' CI runs were stuck queued. Checked again this cycle: outage resolved, both repos' latest commits show green CI. Added a real `CI` status badge to both READMEs (was missing before) now that there's something true to show — a badge would have been actively misleading while stuck queued/failed from the outage.
+
+## Cycle 8 — 2026-08-27
+
+**Research**: `prefers-reduced-motion` is a well-documented accessibility best practice (relevant to vestibular disorders, migraines, ADHD) and explicitly called out in SVG-accessibility testing guides as something to check for. Directly applicable to the live-ticking seconds animation shipped in an earlier cycle.
+
+**Shipped**: `motion=reduce` on `countdown` renders a static seconds digit instead of the SMIL animation. Deliberately an explicit opt-in query param rather than an automatic `prefers-reduced-motion` media-query detection — investigated the automatic route first, but a CSS media query can't reliably stop an *already-running* SMIL `<animate>` timeline across renderers with any real confidence, and shipping an automatic "fix" that might not actually work would be worse than an honest, working, explicit one (same reasoning already applied to `theme=auto` vs. GitHub's own explicit `#gh-dark-mode-only` convention).
+
+**User-prompted addition**: added a "Where people actually use this" section to the README (profile READMEs, project status badges, event/launch pages, roadmap docs, personal sites, chat pinned messages) — direct user feedback that concrete use cases were missing and needed for visitors to see themselves using the tool, not just a feature-by-feature reference.

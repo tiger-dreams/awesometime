@@ -15,6 +15,17 @@ No install, no build step — drop an image URL in your README and it renders li
 
 ![Year Progress](https://awesometime.vercel.app/api)
 
+## Where people actually use this
+
+Any of these is just the image URL dropped somewhere that renders Markdown or plain `<img>` — no account, no build step, no JS.
+
+- **Your GitHub profile README** (`github.com/<you>/<you>`) — a year-progress bar as a small personal touch, or a countdown to something you're building toward.
+- **A project's README** — `dayssince` for "days since last incident/regression," the classic status-page pattern, right at the top of the repo instead of buried in a dashboard only the team sees.
+- **A conference, hackathon, or launch page** — `countdown` to the event date, with the live-ticking seconds for a bit of urgency, embedded in a plain landing page `<img>` tag.
+- **A roadmap or OKR doc** (Notion, Confluence, a wiki page that renders Markdown images) — `period=quarter` or `period=month` next to a milestone list, so "how much of this quarter is left" doesn't require opening a separate calendar.
+- **A personal blog or portfolio site** — "127 days until I ship v2" as a plain `<img>`, no different from embedding any other image.
+- **A Slack/Discord pinned message or channel topic** — most chat clients unfurl image URLs, so a `dayssince`/`countdown` badge works as a lightweight shared status indicator without a bot.
+
 ## Countdown to anything
 
 Not just the calendar year — point it at any date and get a doomsday-clock-style countdown card.
@@ -26,6 +37,8 @@ Not just the calendar year — point it at any date and get a doomsday-clock-sty
 ![Countdown](https://awesometime.vercel.app/api?type=countdown&date=2026-12-25&label=Christmas)
 
 The **seconds box actually ticks**, live, in your browser — it's not a screenshot. That's not JavaScript (an `<img>`-embedded SVG can't run scripts); it's a declarative SMIL `<animate>` loop baked into the SVG itself, so it keeps animating even though the underlying file is only re-fetched per the cache headers below.
+
+Constant motion isn't for everyone — add `&motion=reduce` for a static seconds digit instead of the ticking animation, no different from choosing `theme=light` explicitly. (A CSS `prefers-reduced-motion` media query can't reliably stop an already-running SMIL timeline across renderers, so this is an explicit opt-in rather than an automatic one we can't fully guarantee.)
 
 **Dates default to UTC.** "Countdown widgets show the wrong time" is a genuinely common complaint elsewhere (timezone-unaware countdown plugins are a recurring source of confused bug reports). Pass `tz` with any IANA zone name to interpret `date` as local wall-clock time there instead — DST-aware, computed with the same technique real timezone libraries use, no external dependency:
 
@@ -147,6 +160,7 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 | `color` | 3 or 6-digit hex, no `#` | theme default | all — overrides the accent color (the hazard-stripe color for `dayssince`) |
 | `accent2` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides the secondary accent |
 | `bg` | 3 or 6-digit hex, no `#` | theme default | all — overrides the card background |
+| `motion` | `reduce` | (animated) | `countdown` — static seconds digit instead of the live-ticking animation |
 
 An unrecognized `period` falls back to `year` rather than erroring, same as an unrecognized `style`.
 
@@ -189,6 +203,7 @@ Badge accessibility is a real, [documented](https://github.com/orgs/community/di
 
 - **Contrast**: every text/background color pair used across all themes and styles (including the safety-sign badge) is tested against WCAG AA (4.5:1 minimum) as part of the test suite (`tests/contrast.test.js`) — most pairs clear AAA (7:1). A future color change that regresses this fails CI.
 - **`<title>`**: every SVG includes a `<title>` element describing its current value (e.g. "2026 Progress: 65% complete"), which assistive tech can pick up for inline/object-embedded SVGs.
+- **Motion**: `motion=reduce` on `countdown` swaps the live-ticking seconds animation for a static digit — an explicit opt-in rather than an automatic `prefers-reduced-motion` detection, since CSS can't reliably halt an already-running SMIL timeline across renderers.
 
 One honest limitation, shared by every dynamic badge service including much larger ones: the `alt` text on a `![alt](url)` Markdown image is static, written once by whoever adds the badge to their README, while the badge's *value* changes over time — there's no way for the image itself to update text that lives in someone else's Markdown file. Write a real, current description rather than leaving `alt` empty or generic, e.g. `![2026 is 65% over](https://awesometime.vercel.app/api)`.
 

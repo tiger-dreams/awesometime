@@ -147,3 +147,8 @@ test('locale=es/pt localize period titles and countdown phrasing', () => {
   const ptCountdown = renderFromQuery({ locale: 'pt', type: 'countdown', date: '2026-12-25', label: 'Natal' }, NOW);
   assert.match(ptCountdown.svg, /Natal em/);
 });
+
+test('motion=reduce disables the ticking seconds animation', () => {
+  const { svg } = renderFromQuery({ type: 'countdown', date: '2026-12-25', motion: 'reduce' }, NOW);
+  assert.doesNotMatch(svg, /<animate /);
+});

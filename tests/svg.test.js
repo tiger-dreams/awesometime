@@ -112,3 +112,12 @@ test('every style embeds a descriptive <title> for accessibility', () => {
   const countdown = renderCountdownCard({ title: 'Launch in', days: 5, hours: 3, minutes: 9, isPast: false });
   assert.match(countdown, /<title>Launch in 5 days, 3 hours, 9 minutes<\/title>/);
 });
+
+test('renderCountdownCard: motion=reduce (reduceMotion) renders a static digit, no SMIL', () => {
+  const animated = renderCountdownCard({ title: 'Launch', days: 5, hours: 3, minutes: 9, seconds: 42, isPast: false });
+  assert.match(animated, /<animate /);
+
+  const reduced = renderCountdownCard({ title: 'Launch', days: 5, hours: 3, minutes: 9, seconds: 42, isPast: false, reduceMotion: true });
+  assert.doesNotMatch(reduced, /<animate /);
+  assert.match(reduced, />42</);
+});
