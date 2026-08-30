@@ -5,6 +5,7 @@ import {
   renderGradientProgress,
   renderMinimalProgress,
   renderCountdownCard,
+  renderCountdownBadge,
 } from '../lib/svg.js';
 
 test('renderTerminalProgress produces valid-looking SVG with escaped title', () => {
@@ -72,6 +73,25 @@ test('renderCountdownCard seconds digit defaults to 0 and stays well-formed', ()
   const svg = renderCountdownCard({ title: 'Launch', days: 0, hours: 0, minutes: 0, isPast: false });
   assert.match(svg, /^<svg/);
   assert.match(svg, /<\/svg>$/);
+});
+
+test('renderCountdownBadge is a small, purpose-built card, not a shrunk countdown card', () => {
+  const svg = renderCountdownBadge({ title: '2026 추석', days: 25, isPast: false });
+  assert.match(svg, /width="200" height="60"/);
+  assert.match(svg, />D-25</);
+  // No box grid, no ticking-seconds animation — those don't fit a badge this small.
+  assert.equal((svg.match(/<animate /g) || []).length, 0);
+  assert.equal((svg.match(/<rect /g) || []).length, 1);
+});
+
+test('renderCountdownBadge uses D+N for a past date and clamps negative days to 0', () => {
+  const svg = renderCountdownBadge({ title: 'Launch', days: -3, isPast: true });
+  assert.match(svg, />D\+0</);
+});
+
+test('renderCountdownBadge escapes the title', () => {
+  const svg = renderCountdownBadge({ title: '<script>evil()</script>', days: 1, isPast: false });
+  assert.doesNotMatch(svg, /<script>evil/);
 });
 
 test('theme=auto emits CSS custom properties and a media-query style block, no literal fallback hex', () => {

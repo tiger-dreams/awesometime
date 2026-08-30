@@ -16,6 +16,17 @@ test('type=countdown with a valid future date renders 200', () => {
   assert.match(svg, /New Year/);
 });
 
+test('type=countdown&style=badge renders the compact badge, not the full card', () => {
+  const { svg, status } = renderFromQuery(
+    { type: 'countdown', date: '2026-09-25', label: '2026 추석', style: 'badge' },
+    NOW
+  );
+  assert.equal(status, 200);
+  assert.match(svg, /width="200" height="60"/);
+  assert.match(svg, />D-29</); // 2026-08-27 -> 2026-09-25 is 29 days
+  assert.match(svg, /2026 추석/);
+});
+
 test('type=countdown with a missing date renders a 400 error card', () => {
   const { status } = renderFromQuery({ type: 'countdown' }, NOW);
   assert.equal(status, 400);

@@ -48,6 +48,14 @@ Constant motion isn't for everyone — add `&motion=reduce` for a static seconds
 
 A `tz` that isn't a real IANA zone name renders a 400 error card rather than silently guessing UTC.
 
+**`style=badge`** — a small pill for sitting next to a page title or in a header, where the full card doesn't fit. This isn't the countdown card shrunk down (below about half size, four boxes of digits stop being legible) — it's a purpose-built compact layout: a label and a big D-day number, nothing else.
+
+```md
+![](https://awesometime.vercel.app/api?type=countdown&date=2026-09-25&label=2026%20추석&style=badge)
+```
+
+![](https://awesometime.vercel.app/api?type=countdown&date=2026-09-25&label=2026%20추석&style=badge)
+
 ## Not just the year — any period
 
 `year-progress` generalizes to `period=day|week|month|quarter|year` (year is still the default):
