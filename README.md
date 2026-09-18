@@ -99,7 +99,7 @@ This degrades gracefully (stays in light mode) on renderers that don't support C
 
 ## Styles
 
-Three built-in styles, two themes plus `auto`, and a full set of query params to tune the rest.
+Three built-in styles, 14 themes plus `auto`, and a full set of query params to tune the rest.
 
 **`style=terminal`** (default) — block-segment progress bar:
 
@@ -133,6 +133,37 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 
 ![](https://awesometime.vercel.app/api?style=terminal&color=ff6b6b&theme=light)
 
+## Themes
+
+14 built-in themes: `dark` (default), `light`, plus 12 named dark-style themes. Every theme defines all 7 color keys and passes WCAG AA contrast as a CI-enforced test.
+
+| Theme | Preview |
+|---|---|
+| `tokyonight` | ![](https://awesometime.vercel.app/api?theme=tokyonight) |
+| `dracula` | ![](https://awesometime.vercel.app/api?theme=dracula) |
+| `nord` | ![](https://awesometime.vercel.app/api?theme=nord) |
+| `gruvbox` | ![](https://awesometime.vercel.app/api?theme=gruvbox) |
+| `onedark` | ![](https://awesometime.vercel.app/api?theme=onedark) |
+| `monokai` | ![](https://awesometime.vercel.app/api?theme=monokai) |
+| `cobalt` | ![](https://awesometime.vercel.app/api?theme=cobalt) |
+| `synthwave` | ![](https://awesometime.vercel.app/api?theme=synthwave) |
+| `solarized-dark` | ![](https://awesometime.vercel.app/api?theme=solarized-dark) |
+| `github-dark` | ![](https://awesometime.vercel.app/api?theme=github-dark) |
+| `radical` | ![](https://awesometime.vercel.app/api?theme=radical) |
+| `ayu-dark` | ![](https://awesometime.vercel.app/api?theme=ayu-dark) |
+
+```md
+![](https://awesometime.vercel.app/api?theme=dracula)
+![](https://awesometime.vercel.app/api?type=countdown&date=2026-12-25&label=Christmas&theme=nord)
+```
+
+**Per-element overrides** — any of the 7 theme keys can be overridden individually (hex, no `#`). `color` is kept as an alias of `accent` for backward compatibility:
+
+```md
+![](https://awesometime.vercel.app/api?theme=tokyonight&border=ff6b6b&text=ffffff)
+![](https://awesometime.vercel.app/api?theme=dark&barBg=21262d&dim=8b949e&border=30363d&text=c9d1d9)
+```
+
 **Localized labels** — `locale=ko`, `zh`, `ja`, `es`, or `pt`, or bring your own text entirely via `label=`:
 
 ```md
@@ -158,7 +189,7 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 | `type` | `year-progress`, `countdown`, `dayssince` | `year-progress` | — |
 | `period` | `day`, `week`, `month`, `quarter`, `year` | `year` | `year-progress` |
 | `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
-| `theme` | `dark`, `light`, `auto` | `dark` | `year-progress`, `countdown` |
+| `theme` | `dark`, `light`, `auto`, `tokyonight`, `dracula`, `nord`, `gruvbox`, `onedark`, `monokai`, `cobalt`, `synthwave`, `solarized-dark`, `github-dark`, `radical`, `ayu-dark` | `dark` | `year-progress`, `countdown` |
 | `locale` | `en`, `ko`, `zh`, `ja`, `es`, `pt` | `en` | `year-progress`, `countdown` |
 | `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
 | `year` | any 4-digit year | current year | `year-progress` with `period=year` |
@@ -168,9 +199,13 @@ Three built-in styles, two themes plus `auto`, and a full set of query params to
 | `color` | 3 or 6-digit hex, no `#` | theme default | all — overrides the accent color (the hazard-stripe color for `dayssince`) |
 | `accent2` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides the secondary accent |
 | `bg` | 3 or 6-digit hex, no `#` | theme default | all — overrides the card background |
+| `border` | 3 or 6-digit hex, no `#` | theme default | all except `dayssince` — overrides the card/box border |
+| `text` | 3 or 6-digit hex, no `#` | theme default | all except `dayssince` — overrides primary text |
+| `dim` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides muted/secondary text |
+| `barBg` | 3 or 6-digit hex, no `#` | theme default | `year-progress`, `countdown` — overrides the progress/track background |
 | `motion` | `reduce` | (animated) | `countdown` — static seconds digit instead of the live-ticking animation |
 
-An unrecognized `period` falls back to `year` rather than erroring, same as an unrecognized `style`.
+An unrecognized `period` falls back to `year` rather than erroring, same as an unrecognized `style`. An unrecognized `theme` falls back to `dark`.
 
 Malformed params fall back to defaults instead of erroring, except a missing/invalid `date` on a `type=countdown` request, which renders a small red error card so a typo is obvious at a glance instead of silently wrong.
 

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { renderFromQuery } from '../lib/render.js';
+import { NAMED_THEMES } from '../lib/themes.js';
 
 const NOW = new Date('2026-08-27T00:00:00Z');
 
@@ -162,4 +163,72 @@ test('locale=es/pt localize period titles and countdown phrasing', () => {
 test('motion=reduce disables the ticking seconds animation', () => {
   const { svg } = renderFromQuery({ type: 'countdown', date: '2026-12-25', motion: 'reduce' }, NOW);
   assert.doesNotMatch(svg, /<animate /);
+});
+
+// Named theme smoke tests: each theme should render 200 and contain its accent hex
+for (const [themeName, theme] of Object.entries(NAMED_THEMES)) {
+  const accentHex = theme.accent.slice(1).toLowerCase(); // strip #, lowercase for matching
+  test(`theme=${themeName} renders 200 and contains accent ${theme.accent}`, () => {
+    const { svg, status } = renderFromQuery({ theme: themeName }, NOW);
+    assert.equal(status, 200);
+    // SVG colors are serialized as #rrggbb (lowercase), so match lowercase
+    assert.match(svg, new RegExp(`#${accentHex}`));
+  });
+}
+
+// Built-in themes also tested for completeness
+test('theme=dark renders 200 and contains accent #58a6ff', () => {
+  const { svg, status } = renderFromQuery({ theme: 'dark' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /#58a6ff/);
+});
+
+test('theme=light renders 200 and contains accent #0969da', () => {
+  const { svg, status } = renderFromQuery({ theme: 'light' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /#0969da/);
+});
+
+test('theme=auto renders 200 and contains CSS custom properties', () => {
+  const { svg, status } = renderFromQuery({ theme: 'auto' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /var\(--at-accent\)/);
+});
+
+test('unknown theme falls back to dark', () => {
+  const { svg, status } = renderFromQuery({ theme: 'not-a-real-theme' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /#58a6ff/); // dark's accent
+});
+
+// New per-element override params smoke test
+test('per-element overrides (border, text, dim, barBg) are applied', () => {
+  const { svg, status } = renderFromQuery({
+    theme: 'dark',
+    border: 'ff0000',
+    text: '00ff00',
+    dim: '0000ff',
+    barBg: 'ffff00',
+  }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /#ff0000/); // border
+  assert.match(svg, /#00ff00/); // text
+  assert.match(svg, /#0000ff/); // dim
+  assert.match(svg, /#ffff00/); // barBg
+});
+
+// Backward compat: ?color= still maps to accent
+test('color= param maps to accent (backward compat)', () => {
+  const { svg, status } = renderFromQuery({ theme: 'dark', color: 'ff6b6b' }, NOW);
+  assert.equal(status, 200);
+  assert.match(svg, /#ff6b6b/);
+});
+
+// Malformed hex overrides are ignored
+test('malformed hex overrides are ignored (no crash)', () => {
+  const { svg, status } = renderFromQuery({ theme: 'dark', color: 'nothex', bg: 'zzzzzz' }, NOW);
+  assert.equal(status, 200);
+  // Should fall back to dark theme's defaults
+  assert.match(svg, /#58a6ff/); // dark's accent
+  assert.match(svg, /#0d1117/); // dark's bg
 });

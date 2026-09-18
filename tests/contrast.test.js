@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { NAMED_THEMES } from '../lib/themes.js';
 
 // WCAG 2.x relative luminance / contrast ratio — same formula used by any
 // accessibility checker. Kept as a standalone test (not imported from
@@ -20,25 +21,59 @@ function contrast(fg, bg) {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// Must match lib/svg.js's THEMES + the safety-sign colors exactly — a
-// deliberate duplication (not imported) so this test fails loudly if
-// someone changes a color there without re-checking contrast here.
-const PAIRS = [
-  ['dark theme: text on bg', 'c9d1d9', '0d1117'],
-  ['dark theme: dim on bg', '8b949e', '0d1117'],
-  ['dark theme: accent on bg', '58a6ff', '0d1117'],
-  ['dark theme: accent2 on bg', '3fb950', '0d1117'],
-  ['light theme: text on bg', '1f2328', 'ffffff'],
-  ['light theme: dim on bg', '59636e', 'ffffff'],
-  ['light theme: accent on bg', '0969da', 'ffffff'],
-  ['light theme: accent2 on bg', '1a7f37', 'ffffff'],
-  ['safety sign: white number on black', 'ffffff', '161616'],
-  ['safety sign: yellow caption on black', 'f2c400', '161616'],
+// Built-in themes (must match lib/svg.js's BUILTIN_THEMES exactly)
+const BUILTIN_THEMES = {
+  dark: {
+    bg: '#0d1117',
+    text: '#c9d1d9',
+    dim: '#8b949e',
+    accent: '#58a6ff',
+    accent2: '#3fb950',
+  },
+  light: {
+    bg: '#ffffff',
+    text: '#1f2328',
+    dim: '#59636e',
+    accent: '#0969da',
+    accent2: '#1a7f37',
+  },
+};
+
+// Safety sign colors (not theme-linked, but tested for contrast)
+const SAFETY_COLORS = {
+  white: '#ffffff',
+  black: '#161616',
+  yellow: '#f2c400',
+};
+
+const ALL_THEMES = { ...BUILTIN_THEMES, ...NAMED_THEMES };
+
+// Test pairs: [description, fgKey, bgKey]
+const PAIR_KEYS = [
+  ['text on bg', 'text', 'bg'],
+  ['dim on bg', 'dim', 'bg'],
+  ['accent on bg', 'accent', 'bg'],
+  ['accent2 on bg', 'accent2', 'bg'],
 ];
 
-for (const [name, fg, bg] of PAIRS) {
-  test(`WCAG AA (>=4.5:1) contrast: ${name}`, () => {
-    const ratio = contrast(fg, bg);
-    assert.ok(ratio >= 4.5, `${name}: ${ratio.toFixed(2)}:1 is below WCAG AA (4.5:1)`);
-  });
+for (const [themeName, theme] of Object.entries(ALL_THEMES)) {
+  for (const [pairName, fgKey, bgKey] of PAIR_KEYS) {
+    const fg = theme[fgKey].slice(1); // strip #
+    const bg = theme[bgKey].slice(1);
+    test(`WCAG AA (>=4.5:1) contrast: ${themeName} - ${pairName}`, () => {
+      const ratio = contrast(fg, bg);
+      assert.ok(ratio >= 4.5, `${themeName} - ${pairName}: ${ratio.toFixed(2)}:1 is below WCAG AA (4.5:1)`);
+    });
+  }
 }
+
+// Safety sign contrast tests (unchanged)
+test('WCAG AA (>=4.5:1) contrast: safety sign - white number on black', () => {
+  const ratio = contrast(SAFETY_COLORS.white.slice(1), SAFETY_COLORS.black.slice(1));
+  assert.ok(ratio >= 4.5, `safety sign - white number on black: ${ratio.toFixed(2)}:1 is below WCAG AA (4.5:1)`);
+});
+
+test('WCAG AA (>=4.5:1) contrast: safety sign - yellow caption on black', () => {
+  const ratio = contrast(SAFETY_COLORS.yellow.slice(1), SAFETY_COLORS.black.slice(1));
+  assert.ok(ratio >= 4.5, `safety sign - yellow caption on black: ${ratio.toFixed(2)}:1 is below WCAG AA (4.5:1)`);
+});
