@@ -108,7 +108,9 @@ test('run() does not write a file when the date input is invalid', () => {
       now: NOW,
     });
     assert.equal(existsSync(join(dir, 'awesometime.svg')), false);
+    assert.equal(process.exitCode, 1);
   } finally {
     process.chdir(cwd);
+    process.exitCode = undefined;
   }
 });
