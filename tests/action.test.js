@@ -2,9 +2,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { buildQuery } from '../action/mapInputs.js';
 import { renderFromQuery } from '../lib/render.js';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, mkdtempSync } from 'node:fs';
 import { execSync } from 'node:child_process';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { run } from '../action/main.js';
 import { makeTempGitRepo } from './helpers/tempGitRepo.js';
 
@@ -95,6 +96,55 @@ test('run() skips the commit when the rendered SVG is unchanged', () => {
     assert.equal(firstLog, secondLog);
   } finally {
     process.chdir(cwd);
+  }
+});
+
+test('run() writes into a nested output-path, creating missing directories', () => {
+  const dir = makeTempGitRepo();
+  const cwd = process.cwd();
+  process.chdir(dir);
+  try {
+    run({
+      getInput: fakeGetInput({
+        type: 'countdown', date: '2026-12-31', label: 'New Year',
+        theme: 'dracula', 'output-path': 'assets/badges/awesometime.svg',
+      }),
+      now: NOW,
+    });
+
+    const nestedPath = join(dir, 'assets', 'badges', 'awesometime.svg');
+    assert.ok(existsSync(nestedPath));
+    assert.match(readFileSync(nestedPath, 'utf8'), /New Year/);
+
+    const log = execSync('git log --oneline -1', { cwd: dir }).toString();
+    assert.match(log, /chore: update awesometime badge/);
+  } finally {
+    process.chdir(cwd);
+  }
+});
+
+test('run() calls core.setFailed instead of throwing when git operations fail', () => {
+  // A plain, non-git directory: `git config`/`git add` will fail with a
+  // real git error, exercising the try/catch around the git-operations block.
+  const dir = mkdtempSync(join(tmpdir(), 'awesometime-action-not-a-repo-'));
+  const cwd = process.cwd();
+  process.chdir(dir);
+  try {
+    assert.doesNotThrow(() => {
+      run({
+        getInput: fakeGetInput({
+          type: 'countdown', date: '2026-12-31', label: 'New Year',
+          theme: 'dracula', 'output-path': 'awesometime.svg',
+        }),
+        now: NOW,
+      });
+    });
+    // core.setFailed sets process.exitCode = 1, proving the catch block ran
+    // (rather than the error being silently swallowed).
+    assert.equal(process.exitCode, 1);
+  } finally {
+    process.chdir(cwd);
+    process.exitCode = undefined;
   }
 });
 

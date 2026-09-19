@@ -31318,6 +31318,8 @@ function getIDToken(aud) {
 const external_node_child_process_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:child_process");
 ;// CONCATENATED MODULE: external "node:fs"
 const external_node_fs_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:fs");
+;// CONCATENATED MODULE: external "node:path"
+const external_node_path_namespaceObject = __WEBPACK_EXTERNAL_createRequire(import.meta.url)("node:path");
 ;// CONCATENATED MODULE: ./lib/time.js
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -32290,6 +32292,7 @@ function buildQuery(inputs) {
 
 
 
+
 const INPUT_NAMES = [
   'type', 'date', 'label', 'theme', 'style', 'period', 'locale', 'tz',
   'font', 'color', 'accent2', 'bg', 'border', 'text', 'dim', 'bar-bg', 'motion',
@@ -32320,14 +32323,19 @@ function run({ getInput = core_getInput, now = new Date() } = {}) {
     return;
   }
 
+  (0,external_node_fs_namespaceObject.mkdirSync)((0,external_node_path_namespaceObject.dirname)(outputPath), { recursive: true });
   (0,external_node_fs_namespaceObject.writeFileSync)(outputPath, svg);
 
-  (0,external_node_child_process_namespaceObject.execSync)('git config user.name "github-actions[bot]"');
-  (0,external_node_child_process_namespaceObject.execSync)('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"');
-  (0,external_node_child_process_namespaceObject.execSync)(`git add ${JSON.stringify(outputPath)}`);
-  (0,external_node_child_process_namespaceObject.execSync)(`git commit -m ${JSON.stringify(commitMessage)}`);
-  (0,external_node_child_process_namespaceObject.execSync)('git push');
-  info(`Committed ${outputPath}`);
+  try {
+    (0,external_node_child_process_namespaceObject.execSync)('git config user.name "github-actions[bot]"');
+    (0,external_node_child_process_namespaceObject.execSync)('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"');
+    (0,external_node_child_process_namespaceObject.execSync)(`git add ${JSON.stringify(outputPath)}`);
+    (0,external_node_child_process_namespaceObject.execSync)(`git commit -m ${JSON.stringify(commitMessage)}`);
+    (0,external_node_child_process_namespaceObject.execSync)('git push');
+    info(`Committed ${outputPath}`);
+  } catch (error) {
+    setFailed(error.message);
+  }
 }
 
 ;// CONCATENATED MODULE: ./action/index.js

@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import { execSync } from 'node:child_process';
-import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { renderFromQuery } from '../lib/render.js';
 import { buildQuery } from './mapInputs.js';
 
@@ -34,12 +35,17 @@ export function run({ getInput = core.getInput, now = new Date() } = {}) {
     return;
   }
 
+  mkdirSync(dirname(outputPath), { recursive: true });
   writeFileSync(outputPath, svg);
 
-  execSync('git config user.name "github-actions[bot]"');
-  execSync('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"');
-  execSync(`git add ${JSON.stringify(outputPath)}`);
-  execSync(`git commit -m ${JSON.stringify(commitMessage)}`);
-  execSync('git push');
-  core.info(`Committed ${outputPath}`);
+  try {
+    execSync('git config user.name "github-actions[bot]"');
+    execSync('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"');
+    execSync(`git add ${JSON.stringify(outputPath)}`);
+    execSync(`git commit -m ${JSON.stringify(commitMessage)}`);
+    execSync('git push');
+    core.info(`Committed ${outputPath}`);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
 }
