@@ -99,6 +99,21 @@
     letter-spacing: 1px;
     margin-top: 4px;
   }
+
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px 12px;
+    margin: 16px 0 24px;
+  }
+  .theme-item { text-align: center; }
+  .theme-item img { display: block; margin: 0 auto; }
+  .theme-name {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--dim);
+    margin-top: 6px;
+  }
 </style>
 </head>
 <body>
@@ -134,6 +149,24 @@
   <img class="badge" src="/api?style=gradient&amp;theme=light" alt="Gradient style badge">
   <img class="badge" src="/api?style=minimal" alt="Minimal style badge">
   <img class="badge" src="/api?locale=ko" alt="Korean locale badge">
+
+  <h2>14 built-in themes</h2>
+  <p style="color: var(--dim); font-size: 14px; margin: -4px 0 0;">Pass <code>theme=</code> on any badge, or use <code>theme=auto</code> to follow the viewer's OS/browser dark-mode setting.</p>
+  <div class="theme-grid">
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=tokyonight" alt="tokyonight theme"><div class="theme-name">tokyonight</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=dracula" alt="dracula theme"><div class="theme-name">dracula</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=nord" alt="nord theme"><div class="theme-name">nord</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=gruvbox" alt="gruvbox theme"><div class="theme-name">gruvbox</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=onedark" alt="onedark theme"><div class="theme-name">onedark</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=monokai" alt="monokai theme"><div class="theme-name">monokai</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=cobalt" alt="cobalt theme"><div class="theme-name">cobalt</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=synthwave" alt="synthwave theme"><div class="theme-name">synthwave</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=solarized-dark" alt="solarized-dark theme"><div class="theme-name">solarized-dark</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=github-dark" alt="github-dark theme"><div class="theme-name">github-dark</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=radical" alt="radical theme"><div class="theme-name">radical</div></div>
+    <div class="theme-item"><img class="badge" src="/api?type=countdown&amp;date=2027-01-01&amp;label=2027&amp;style=badge&amp;theme=ayu-dark" alt="ayu-dark theme"><div class="theme-name">ayu-dark</div></div>
+  </div>
+  <pre>![](https://awesometime.vercel.app/api?theme=dracula)</pre>
 
   <h2>Use it as a library</h2>
   <pre>npm install @jeongpd/awesometime</pre>
