@@ -30,6 +30,7 @@ jobs:
         run: npm test
 
       - name: Verify dist/ is up to date
+        if: matrix.node-version == 20
         run: |
           npm run build:action
           git diff --exit-code dist/
