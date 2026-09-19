@@ -265,6 +265,48 @@ cd awesometime
 vercel deploy --prod
 ```
 
+## GitHub Action
+
+A third way to use awesometime, alongside the hosted URL and the npm
+library: a GitHub Action that renders a badge and commits it straight into
+your repo. Unlike the hosted URL, this has **zero runtime external
+dependency** — no live server involved, ever — and works in environments
+where outbound requests to third-party domains are blocked but `github.com`
+itself is reachable.
+
+```yaml
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update-badge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tiger-dreams/awesometime@v1
+        with:
+          type: countdown
+          date: '2027-01-01'
+          theme: dracula
+          output-path: awesometime.svg
+```
+
+Inputs mirror the hosted API's query parameters (`type`, `date`, `label`,
+`theme`, `style`, `period`, `locale`, `tz`, `font`, `color`, `accent2`,
+`bg`, `border`, `text`, `dim`, `bar-bg`), plus two Action-only inputs:
+`output-path` (default `awesometime.svg`) and `commit-message` (default
+`chore: update awesometime badge`).
+
+One difference from the hosted URL: the committed SVG is a periodic
+snapshot, refreshed only on whatever `schedule` cron you set, not
+re-rendered on every view. Because of that, `motion` defaults to `reduce`
+here (a static seconds digit) instead of the hosted API's live-ticking
+default — a ticking animation baked into a file that only updates once a
+day would loop convincingly but show the wrong second.
+
 ## Contributing
 
 Bug reports and PRs welcome — see [CONTRIBUTING.md](./CONTRIBUTING.md) for running tests and adding a new style.
