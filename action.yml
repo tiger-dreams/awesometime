@@ -1,0 +1,67 @@
+name: 'awesometime badge'
+description: 'Render an awesometime SVG badge (year progress, countdown, or days-since) and commit it into this repository.'
+author: 'tiger-dreams'
+branding:
+  icon: 'clock'
+  color: 'blue'
+inputs:
+  type:
+    description: "'year-progress' (default), 'countdown', or 'dayssince'"
+    default: ''
+  date:
+    description: 'YYYY-MM-DD — required for type=countdown or type=dayssince'
+    default: ''
+  label:
+    description: 'Badge title/label text'
+    default: ''
+  theme:
+    description: "'dark' (default), 'light', 'auto', or a named theme: tokyonight, dracula, nord, gruvbox, onedark, monokai, cobalt, synthwave, solarized-dark, github-dark, radical, ayu-dark"
+    default: ''
+  style:
+    description: "'terminal' (default), 'gradient', 'minimal', or 'badge' (countdown only)"
+    default: ''
+  period:
+    description: "'day', 'week', 'month', 'quarter', or 'year' (default) — year-progress only"
+    default: ''
+  locale:
+    description: "'en' (default), 'ko', 'zh', 'ja', 'es', or 'pt'"
+    default: ''
+  tz:
+    description: 'IANA timezone (e.g. Asia/Seoul) for interpreting "date"'
+    default: ''
+  font:
+    description: "'mono' (default), 'jetbrains', 'fira', 'ibm', 'cascadia', or 'space'"
+    default: ''
+  color:
+    description: 'Accent color override, 3 or 6-digit hex, no #'
+    default: ''
+  accent2:
+    description: 'Secondary accent color override, hex no #'
+    default: ''
+  bg:
+    description: 'Background color override, hex no #'
+    default: ''
+  border:
+    description: 'Border color override, hex no #'
+    default: ''
+  text:
+    description: 'Primary text color override, hex no #'
+    default: ''
+  dim:
+    description: 'Secondary/muted text color override, hex no #'
+    default: ''
+  bar-bg:
+    description: 'Progress/track background color override, hex no #'
+    default: ''
+  motion:
+    description: "'reduce' (default here — a static seconds digit) or any other value to keep the ticking countdown animation despite it being a periodic snapshot once committed"
+    default: 'reduce'
+  output-path:
+    description: 'Where to write the SVG file, relative to the repo root'
+    default: 'awesometime.svg'
+  commit-message:
+    description: 'Commit message used when the rendered badge changed'
+    default: 'chore: update awesometime badge'
+runs:
+  using: 'node24'
+  main: 'dist/index.js'
