@@ -31833,6 +31833,21 @@ function clampPercent(p) {
   return Math.min(100, Math.max(0, p));
 }
 
+/**
+ * Estimates rendered width with the monospace average advance (0.6em) and
+ * truncates with an ellipsis when a user-supplied label would overflow its
+ * fixed-width card. Only the visible text is shortened — callers keep the
+ * full string in the accessible <title>. `extraPerChar` accounts for
+ * letter-spacing where a style uses it.
+ */
+function fitText(text, maxWidthPx, fontSize, extraPerChar = 0) {
+  const s = String(text);
+  const perChar = fontSize * 0.6 + extraPerChar;
+  const maxChars = Math.max(1, Math.floor(maxWidthPx / perChar));
+  if (s.length <= maxChars) return s;
+  return `${s.slice(0, maxChars - 1).trimEnd()}…`;
+}
+
 const HEX_COLOR = /^[0-9a-fA-F]{3}([0-9a-fA-F]{3})?$/;
 
 /**
@@ -31922,6 +31937,7 @@ function renderTerminalProgress({ title, percent, elapsedLabel, remainingLabel, 
   const t = resolveThemeOrAuto(theme, colors);
   const font = resolveFont(fontKey);
   const pct = clampPercent(percent);
+  const displayTitle = fitText(title, 380, 15);
   const segments = 32;
   const filled = Math.round((pct / 100) * segments);
   const gap = 3;
@@ -31935,7 +31951,7 @@ function renderTerminalProgress({ title, percent, elapsedLabel, remainingLabel, 
     styleBlock: theme === 'auto' ? autoStyleBlock(colors) : '',
     a11yTitle: `${title}: ${Math.round(pct)}% — ${elapsedLabel}, ${remainingLabel}`,
     children: `
-  <text x="24" y="34" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(title)}</text>
+  <text x="24" y="34" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(displayTitle)}</text>
   <text x="${WIDTH - 24}" y="34" text-anchor="end" font-family="${font}" font-size="15" font-weight="600" fill="${t.accent}">${Math.round(pct)}%</text>
   ${bar}
   <text x="24" y="94" font-family="${font}" font-size="13" fill="${t.dim}">${escapeXml(elapsedLabel)} · ${escapeXml(remainingLabel)}</text>
@@ -31950,6 +31966,7 @@ function renderGradientProgress({ title, percent, elapsedLabel, remainingLabel, 
   const t = resolveThemeOrAuto(theme, colors);
   const font = resolveFont(fontKey);
   const pct = clampPercent(percent);
+  const displayTitle = fitText(title, 380, 15);
   const barX = 24;
   const barW = WIDTH - 48;
   const barY = 58;
@@ -31967,7 +31984,7 @@ function renderGradientProgress({ title, percent, elapsedLabel, remainingLabel, 
       <stop offset="100%" stop-color="${t.accent2}"/>
     </linearGradient>
   </defs>
-  <text x="24" y="34" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(title)}</text>
+  <text x="24" y="34" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(displayTitle)}</text>
   <text x="${WIDTH - 24}" y="34" text-anchor="end" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${Math.round(pct)}%</text>
   <rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="7" fill="${t.barBg}"/>
   <rect x="${barX}" y="${barY}" width="${fillW}" height="${barH}" rx="7" fill="url(#${gradId})"/>
@@ -31984,6 +32001,7 @@ function renderMinimalProgress({ title, percent, theme = 'dark', colors, font: f
   const t = resolveThemeOrAuto(theme, colors);
   const font = resolveFont(fontKey);
   const pct = clampPercent(percent);
+  const displayTitle = fitText(title, 232, 12);
   const barX = 16;
   const barW = 320 - 32;
   const barY = 30;
@@ -31993,7 +32011,7 @@ function renderMinimalProgress({ title, percent, theme = 'dark', colors, font: f
   return `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="46" viewBox="0 0 320 46" role="img">
   <title>${escapeXml(`${title}: ${Math.round(pct)}% complete`)}</title>
   ${styleBlock}
-  <text x="16" y="18" font-family="${font}" font-size="12" fill="${t.text}">${escapeXml(title)} — ${Math.round(pct)}%</text>
+  <text x="16" y="18" font-family="${font}" font-size="12" fill="${t.text}">${escapeXml(displayTitle)} — ${Math.round(pct)}%</text>
   <rect x="${barX}" y="${barY}" width="${barW}" height="${barH}" rx="3" fill="${t.barBg}"/>
   <rect x="${barX}" y="${barY}" width="${fillW}" height="${barH}" rx="3" fill="${t.accent}"/>
 </svg>`;
@@ -32030,6 +32048,7 @@ function animatedSecondsDigit({ x, y, startSecond, color, font }) {
 function renderCountdownCard({ title, days, hours, minutes, seconds = 0, isPast, theme = 'dark', colors, font: fontKey, reduceMotion = false }) {
   const t = resolveThemeOrAuto(theme, colors);
   const font = resolveFont(fontKey);
+  const displayTitle = fitText(title, 448, 15);
   const units = [
     [days, isPast ? 'DAYS AGO' : 'DAYS'],
     [hours, 'HRS'],
@@ -32078,7 +32097,7 @@ function renderCountdownCard({ title, days, hours, minutes, seconds = 0, isPast,
     styleBlock: theme === 'auto' ? autoStyleBlock(colors) : '',
     a11yTitle: `${title} ${Math.max(0, days)} days, ${Math.max(0, hours)} hours, ${Math.max(0, minutes)} minutes`,
     children: `
-  <text x="${WIDTH / 2}" y="28" text-anchor="middle" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(title)}</text>
+  <text x="${WIDTH / 2}" y="28" text-anchor="middle" font-family="${font}" font-size="15" font-weight="600" fill="${t.text}">${escapeXml(displayTitle)}</text>
   ${boxes}
   ${secBox}
   `,
@@ -32098,12 +32117,13 @@ function renderCountdownBadge({ title, days, isPast, theme = 'dark', colors, fon
   const w = 200;
   const h = 60;
   const dday = `D${isPast ? '+' : '-'}${Math.max(0, days)}`;
+  const displayTitle = fitText(title, 180, 11);
   const styleBlock = theme === 'auto' ? autoStyleBlock(colors) : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img">
   <title>${escapeXml(`${title}: ${dday}`)}</title>
   ${styleBlock}
   <rect x="0.5" y="0.5" width="${w - 1}" height="${h - 1}" rx="14" fill="${t.bg}" stroke="${t.border}"/>
-  <text x="${w / 2}" y="23" text-anchor="middle" font-family="${font}" font-size="11" font-weight="600" letter-spacing=".01em" fill="${t.dim}">${escapeXml(title)}</text>
+  <text x="${w / 2}" y="23" text-anchor="middle" font-family="${font}" font-size="11" font-weight="600" letter-spacing=".01em" fill="${t.dim}">${escapeXml(displayTitle)}</text>
   <text x="${w / 2}" y="48" text-anchor="middle" font-family="${font}" font-size="24" font-weight="800" fill="${t.accent}">${escapeXml(dday)}</text>
 </svg>`;
 }
@@ -32137,7 +32157,7 @@ function renderSafetySign({ title, days, isPast = true, colors = {}, font: fontK
   <rect x="${border}" y="${border}" width="${w - border * 2}" height="${h - border * 2}" fill="${bg}"/>
   <text x="${w / 2}" y="46" text-anchor="middle" font-family="${font}" font-size="13" font-weight="700" letter-spacing="2" fill="${stripe}">${escapeXml(caption)}</text>
   <text x="${w / 2}" y="98" text-anchor="middle" font-family="${font}" font-size="52" font-weight="700" fill="#ffffff">${Math.max(0, days)}</text>
-  <text x="${w / 2}" y="122" text-anchor="middle" font-family="${font}" font-size="13" font-weight="600" letter-spacing="1" fill="${stripe}">${escapeXml(title.toUpperCase())}</text>
+  <text x="${w / 2}" y="122" text-anchor="middle" font-family="${font}" font-size="13" font-weight="600" letter-spacing="1" fill="${stripe}">${escapeXml(fitText(title.toUpperCase(), 376, 13, 2))}</text>
 </svg>`;
 }
 
