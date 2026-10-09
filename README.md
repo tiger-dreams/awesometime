@@ -188,7 +188,7 @@ Three built-in styles, 14 themes plus `auto`, and a full set of query params to 
 |---|---|---|---|
 | `type` | `year-progress`, `countdown`, `dayssince` | `year-progress` | — |
 | `period` | `day`, `week`, `month`, `quarter`, `year` | `year` | `year-progress` |
-| `style` | `terminal`, `gradient`, `minimal` | `terminal` | `year-progress` |
+| `style` | `terminal`, `gradient`, `minimal`, `badge` | `terminal` | `year-progress` (`badge` is `countdown` only) |
 | `theme` | `dark`, `light`, `auto`, `tokyonight`, `dracula`, `nord`, `gruvbox`, `onedark`, `monokai`, `cobalt`, `synthwave`, `solarized-dark`, `github-dark`, `radical`, `ayu-dark` | `dark` | `year-progress`, `countdown` |
 | `locale` | `en`, `ko`, `zh`, `ja`, `es`, `pt` | `en` | `year-progress`, `countdown` |
 | `font` | `mono`, `jetbrains`, `fira`, `ibm`, `cascadia`, `space` | `mono` | all |
@@ -208,6 +208,14 @@ Three built-in styles, 14 themes plus `auto`, and a full set of query params to 
 An unrecognized `period` falls back to `year` rather than erroring, same as an unrecognized `style`. An unrecognized `theme` falls back to `dark`.
 
 Malformed params fall back to defaults instead of erroring, except a missing/invalid `date` on a `type=countdown` request, which renders a small red error card so a typo is obvious at a glance instead of silently wrong.
+
+## Full-screen view for phones
+
+Every badge URL also works under `/view` instead of `/api` — same query params, but the badge is wrapped in a full-screen page that centers and scales it. Add that page to your phone's home screen and the badge becomes a glanceable full-screen display (the page re-checks every 5 minutes) instead of a small image in a browser tab.
+
+```
+https://awesometime.vercel.app/view?type=countdown&date=2026-12-31&label=New%20Year
+```
 
 ## Use it as a library
 
@@ -253,7 +261,7 @@ One honest limitation, shared by every dynamic badge service including much larg
 
 ## Caching
 
-Responses are served with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` — GitHub's own image proxy (camo) also caches on top of that, so a badge typically updates within an hour of being re-fetched, not instantly. That's the right tradeoff for "days left in the year," not a design accident.
+Responses are served with `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` — GitHub's own image proxy (camo) also caches on top of that, so a badge typically updates within an hour of being re-fetched, not instantly. That's the right tradeoff for "days left in the year," not a design accident. Error responses (the 400 error card) are the exception: they're only cached for 60 seconds, so fixing a typo'd URL recovers quickly instead of staying stuck on the error card.
 
 ## Self-hosting
 
